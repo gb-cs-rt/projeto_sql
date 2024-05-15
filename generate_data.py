@@ -224,6 +224,17 @@ for _ in range(10):
         VALUES (%s, %s, %s) ON CONFLICT (id_grupo) DO NOTHING
     """, (id_grupo, id_professor, ra))
 
+# Insert data into ChefeDepartamento
+cursor.execute("SELECT id FROM Professor")
+professores = cursor.fetchall()
+for _ in range(len(departamentos)):
+    id_professor = random.choice(professores)[0]
+    nome_dep = departamentos.pop()
+    cursor.execute("""
+        INSERT INTO ChefeDepartamento (id_professor, nome_departamento) 
+        VALUES (%s, %s) ON CONFLICT (id_professor) DO NOTHING
+    """, (id_professor, nome_dep))
+
 # Commit the transaction and close the connection
 conn.commit()
 conn.close()
