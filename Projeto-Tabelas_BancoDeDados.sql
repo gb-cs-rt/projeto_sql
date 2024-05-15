@@ -68,7 +68,7 @@ CREATE TABLE Cursa (
     ano NUMERIC(4),
     media NUMERIC(2, 2),
     faltas NUMERIC(2),
-    PRIMARY KEY (id_aluno, id_curso),
+    PRIMARY KEY (semestre, ano),
     FOREIGN KEY (id_aluno) REFERENCES Aluno(ra),
     FOREIGN KEY (id_curso) REFERENCES Curso(id_curso),
     FOREIGN KEY (codigo_disciplina) REFERENCES Disciplina(codigo_disciplina)
@@ -82,7 +82,7 @@ CREATE TABLE Leciona (
     semestre NUMERIC(1),
     ano NUMERIC(4),
     carga_horaria NUMERIC(3),
-    PRIMARY KEY (id_professor, id_curso, codigo_disciplina),
+    PRIMARY KEY (semestre,ano),
     FOREIGN KEY (id_professor) REFERENCES Professor(id),
     FOREIGN KEY (id_curso) REFERENCES Curso(id_curso),
     FOREIGN KEY (codigo_disciplina) REFERENCES Disciplina(codigo_disciplina)
