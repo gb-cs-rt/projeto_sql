@@ -1,12 +1,13 @@
-import sqlite3
+import psycopg2
 from faker import Faker
 import random
+import os
 
 # Initialize Faker for generating random data
 fake = Faker()
 
 # Connect to the SQLite database (replace with your DB connection)
-conn = sqlite3.connect('university.db')
+conn = psycopg2.connect(os.environ["DATABASE_URL"])
 cursor = conn.cursor()
 
 # Create tables
@@ -79,7 +80,7 @@ tables = [
         codigo_disciplina VARCHAR(6),
         semestre NUMERIC(1),
         ano NUMERIC(4),
-        media NUMERIC(2, 2),
+        media NUMERIC(4, 2),
         faltas NUMERIC(2),
         PRIMARY KEY (semestre, ano),
         FOREIGN KEY (id_aluno) REFERENCES Aluno(ra),
@@ -118,42 +119,42 @@ for table in tables:
 # Insert data into Departamento
 departamentos = ['Science', 'Arts', 'Engineering', 'Mathematics']
 for dep in departamentos:
-    cursor.execute("INSERT INTO Departamento (nome_departamento) VALUES (?)", (dep,))
+    cursor.execute("INSERT INTO Departamento (nome_departamento) VALUES (%s) ON CONFLICT (nome_departamento) DO NOTHING", (dep,))
 
 # Insert data into Professor
 for _ in range(10):
-    id_prof = fake.unique.ssn()
+    id_prof = str(random.randint(500000000, 999999999))
     nome_dep = random.choice(departamentos)
     nome = fake.name()
     email = fake.email()
-    telefone = fake.phone_number()
+    telefone = str(random.randint(100000000000, 999999999999))
     salario = round(random.uniform(3000, 10000), 2)
     cursor.execute("""
         INSERT INTO Professor (id, nome_departamento, nome, email, telefone, salario) 
-        VALUES (?, ?, ?, ?, ?, ?)
+        VALUES (%s, %s, %s, %s, %s, %s) ON CONFLICT (id) DO NOTHING
     """, (id_prof, nome_dep, nome, email, telefone, salario))
 
 # Insert data into Aluno
 for _ in range(50):
-    ra = fake.unique.ssn()
+    ra = str(random.randint(100000000, 499999999))
     nome_dep = random.choice(departamentos)
     nome = fake.name()
     email = fake.email()
-    telefone = fake.phone_number()
+    telefone = str(random.randint(100000000000, 999999999999))
     cursor.execute("""
         INSERT INTO Aluno (ra, nome_departamento, nome, email, telefone) 
-        VALUES (?, ?, ?, ?, ?)
+        VALUES (%s, %s, %s, %s, %s) ON CONFLICT (ra) DO NOTHING
     """, (ra, nome_dep, nome, email, telefone))
 
 # Insert data into Curso
 for _ in range(5):
-    id_curso = fake.unique.ssn()
+    id_curso = str(random.randint(1000, 9999))
     nome_dep = random.choice(departamentos)
     horas_complementares = random.randint(20, 50)
     faltas = random.randint(0, 10)
     cursor.execute("""
         INSERT INTO Curso (id_curso, nome_departamento, horas_complementares, faltas) 
-        VALUES (?, ?, ?, ?)
+        VALUES (%s, %s, %s, %s) ON CONFLICT (id_curso) DO NOTHING
     """, (id_curso, nome_dep, horas_complementares, faltas))
 
 # Insert data into Disciplina
@@ -164,22 +165,27 @@ for _ in range(15):
     carga_horaria = random.randint(30, 60)
     cursor.execute("""
         INSERT INTO Disciplina (codigo_disciplina, nome_departamento, nome, carga_horaria) 
-        VALUES (?, ?, ?, ?)
+        VALUES (%s, %s, %s, %s) ON CONFLICT (codigo_disciplina) DO NOTHING
     """, (codigo_disciplina, nome_dep, nome, carga_horaria))
 
 # Insert data into MatrizCurricular
-disciplinas = cursor.execute("SELECT codigo_disciplina FROM Disciplina").fetchall()
-cursos = cursor.execute("SELECT id_curso FROM Curso").fetchall()
+cursor.execute("SELECT codigo_disciplina FROM Disciplina")
+disciplinas = cursor.fetchall()
+
+cursor.execute("SELECT id_curso FROM Curso")
+cursos = cursor.fetchall()
+
 for _ in range(20):
     codigo_disciplina = random.choice(disciplinas)[0]
     id_curso = random.choice(cursos)[0]
     cursor.execute("""
         INSERT INTO MatrizCurricular (codigo_disciplina, id_curso) 
-        VALUES (?, ?)
+        VALUES (%s, %s) ON CONFLICT (codigo_disciplina, id_curso) DO NOTHING
     """, (codigo_disciplina, id_curso))
 
 # Insert data into Cursa
-alunos = cursor.execute("SELECT ra FROM Aluno").fetchall()
+cursor.execute("SELECT ra FROM Aluno")
+alunos = cursor.fetchall()
 for _ in range(30):
     id_aluno = random.choice(alunos)[0]
     id_curso = random.choice(cursos)[0]
@@ -190,11 +196,12 @@ for _ in range(30):
     faltas = random.randint(0, 10)
     cursor.execute("""
         INSERT INTO Cursa (id_aluno, id_curso, codigo_disciplina, semestre, ano, media, faltas) 
-        VALUES (?, ?, ?, ?, ?, ?, ?)
+        VALUES (%s, %s, %s, %s, %s, %s, %s) ON CONFLICT (semestre, ano) DO NOTHING
     """, (id_aluno, id_curso, codigo_disciplina, semestre, ano, media, faltas))
 
 # Insert data into Leciona
-professores = cursor.execute("SELECT id FROM Professor").fetchall()
+cursor.execute("SELECT id FROM Professor")
+professores = cursor.fetchall()
 for _ in range(30):
     id_professor = random.choice(professores)[0]
     id_curso = random.choice(cursos)[0]
@@ -204,7 +211,7 @@ for _ in range(30):
     carga_horaria = random.randint(30, 60)
     cursor.execute("""
         INSERT INTO Leciona (id_professor, id_curso, codigo_disciplina, semestre, ano, carga_horaria) 
-        VALUES (?, ?, ?, ?, ?, ?)
+        VALUES (%s, %s, %s, %s, %s, %s) ON CONFLICT (semestre, ano) DO NOTHING
     """, (id_professor, id_curso, codigo_disciplina, semestre, ano, carga_horaria))
 
 # Insert data into GrupoTCC
@@ -214,9 +221,11 @@ for _ in range(10):
     ra = random.choice(alunos)[0]
     cursor.execute("""
         INSERT INTO GrupoTCC (id_grupo, id_professor, ra) 
-        VALUES (?, ?, ?)
+        VALUES (%s, %s, %s) ON CONFLICT (id_grupo) DO NOTHING
     """, (id_grupo, id_professor, ra))
 
 # Commit the transaction and close the connection
 conn.commit()
 conn.close()
+
+print("Database and tables created, and data inserted successfully!")
