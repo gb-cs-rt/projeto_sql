@@ -1,4 +1,3 @@
-
 -- 1. Histórico escolar de qualquer aluno
 
 SELECT *
