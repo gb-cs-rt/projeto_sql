@@ -231,7 +231,9 @@ for _ in range(len(alunos)):
         codigo_disciplina = disciplinas_matriz.pop()[0]
         semestre = random.randint(1, 2)
         ano = random.randint(2019, 2024)
-        media = round(random.uniform(0, 10), 2)
+        # 70% of the students have a grade between 5 and 10
+        # 30% of the students have a grade between 0 and 5
+        media = random.uniform(0, 10) if random.random() < 0.3 else random.uniform(5, 10)
         faltas = random.randint(0, 10)
         cursor.execute("""
             INSERT INTO Cursa (id_aluno, id_curso, codigo_disciplina, semestre, ano, media, faltas) 
