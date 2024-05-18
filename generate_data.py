@@ -216,9 +216,10 @@ for _ in range(len(disciplinas)):
 # Insert data into Cursa
 cursor.execute("SELECT ra, id_curso FROM Aluno")
 alunos = cursor.fetchall()
+alunos_copy = alunos.copy()
 
 for _ in range(len(alunos)):
-    aluno = alunos.pop(random.randint(0, len(alunos) - 1))
+    aluno = alunos_copy.pop(random.randint(0, len(alunos_copy) - 1))
     id_aluno = aluno[0]
     id_curso = aluno[1]
 
