@@ -54,7 +54,8 @@ FROM AlunosFormados af
 JOIN UltimaDisciplina ud ON af.ra = ud.ra
 JOIN Aluno a ON af.ra = a.ra
 WHERE ud.ultimo_semestre = 2  -- Substitua pelo semestre desejado
-AND ud.ultimo_ano = 2023;  -- Substitua pelo ano desejado
+AND ud.ultimo_ano = 2023  -- Substitua pelo ano desejado
+ORDER BY a.ra;
 
 --4. listar todos os professores que são chefes de departamento, junto com o nome do departamento
 
