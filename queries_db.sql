@@ -20,16 +20,23 @@ WHERE l.id_professor = '2';
 
 --3. listar alunos que já se formaram (foram aprovados em todos os cursos de uma matriz curricular) em um determinado semestre de um ano
 
-WITH CursosAprovados AS (
-    SELECT c.id_aluno, c.semestre, c.ano
-    FROM Cursa c
-    WHERE c.media >= 5
-    GROUP BY c.id_aluno, c.semestre, c.ano
+WITH TotalDisciplinas AS (
+    SELECT id_aluno, COUNT(codigo_disciplina) AS total_disciplinas
+    FROM Cursa
+    WHERE semestre = 1 AND ano = 2021
+    GROUP BY id_aluno
+),
+DisciplinasAprovadas AS (
+    SELECT id_aluno, COUNT(codigo_disciplina) AS disciplinas_aprovadas
+    FROM Cursa
+    WHERE media >= 5 AND semestre = 1 AND ano = 2021
+    GROUP BY id_aluno
 )
-SELECT a.ra, a.nome, c.semestre, c.ano
+SELECT a.ra, a.nome
 FROM Aluno a
-INNER JOIN CursosAprovados c ON a.ra = c.id_aluno
-WHERE c.semestre = 1 AND c.ano = 2021;
+INNER JOIN TotalDisciplinas t ON a.ra = t.id_aluno
+INNER JOIN DisciplinasAprovadas d ON a.ra = d.id_aluno
+WHERE t.total_disciplinas = d.disciplinas_aprovadas;
 
 --4. listar todos os professores que são chefes de departamento, junto com o nome do departamento
 
