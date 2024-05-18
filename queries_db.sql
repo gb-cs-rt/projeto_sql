@@ -1,22 +1,19 @@
 -- 1. histórico escolar de qualquer aluno,retornando o código e nome da disciplina, semestre e ano que a disciplina foi cursada e nota final
 
-SELECT *
-FROM Cursa;
-
-SELECT c.id_aluno, c.codigo_disciplina, d.nome AS nome_disciplina, c.semestre, c.ano, c.media AS nota_final
+SELECT c.id_aluno as ra, c.codigo_disciplina, d.nome AS nome_disciplina, c.semestre, c.ano, c.media AS nota_final
 FROM Cursa c
 INNER JOIN Disciplina d ON c.codigo_disciplina = d.codigo_disciplina
-WHERE c.id_aluno = '33';
+WHERE c.id_aluno = '1'
+ORDER BY c.ano, c.semestre;
 
 --2. histórico de disciplinas ministradas por qualquer professor, com semestre e ano
 
-SELECT *
-FROM Leciona;
-
-SELECT l.id_professor, d.codigo_disciplina, d.nome AS nome_disciplina, l.semestre, l.ano
+SELECT l.id_professor, p.nome, d.codigo_disciplina, d.nome AS nome_disciplina, l.semestre, l.ano
 FROM Leciona l
 INNER JOIN Disciplina d ON l.codigo_disciplina = d.codigo_disciplina
-WHERE l.id_professor = '2';
+INNER JOIN Professor p ON l.id_professor = p.id
+WHERE l.id_professor = '2'
+ORDER BY l.ano, l.semestre;
 
 --3. listar alunos que já se formaram (foram aprovados em todos os cursos de uma matriz curricular) em um determinado semestre de um ano
 
