@@ -1,98 +1,106 @@
 -- Criação da tabela Departamento
-CREATE TABLE Departamento (
-    nome_departamento VARCHAR(20) PRIMARY KEY
+CREATE TABLE IF NOT EXISTS Departamento (
+    nome_departamento VARCHAR(30) PRIMARY KEY
 );
 
 -- Criação da tabela Professor
-CREATE TABLE Professor (
-    id VARCHAR(9) PRIMARY KEY,
-    nome_departamento VARCHAR(20),
+CREATE SEQUENCE professor_id_seq START 1;
+    
+CREATE TABLE IF NOT EXISTS Professor (
+    id INTEGER PRIMARY KEY DEFAULT nextval('professor_id_seq'),
+    nome_departamento VARCHAR(30),
     nome VARCHAR(50),
     email VARCHAR(50),
-    telefone VARCHAR(13),
+    telefone VARCHAR(20),
     salario NUMERIC(8, 2),
     FOREIGN KEY (nome_departamento) REFERENCES Departamento(nome_departamento)
 );
 
 -- Criação da tabela ChefeDepartamento
-CREATE TABLE ChefeDepartamento (
-    id_professor VARCHAR(9) PRIMARY KEY,
-    nome_departamento VARCHAR(20),
+CREATE TABLE IF NOT EXISTS ChefeDepartamento (
+    id_professor INTEGER PRIMARY KEY,
+    nome_departamento VARCHAR(30),
     FOREIGN KEY (id_professor) REFERENCES Professor(id),
     FOREIGN KEY (nome_departamento) REFERENCES Departamento(nome_departamento)
 );
 
--- Criação da tabela Aluno
-CREATE TABLE Aluno (
-    ra VARCHAR(9) PRIMARY KEY,
-    nome_departamento VARCHAR(20),
-    nome VARCHAR(50),
-    email VARCHAR(50),
-    telefone VARCHAR(13),
-    FOREIGN KEY (nome_departamento) REFERENCES Departamento(nome_departamento)
-);
-
 -- Criação da tabela Curso
-CREATE TABLE Curso (
-    id_curso VARCHAR(9) PRIMARY KEY,
-    nome_departamento VARCHAR(20),
+CREATE SEQUENCE curso_id_seq START 1;
+
+CREATE TABLE IF NOT EXISTS Curso (
+    id_curso INTEGER PRIMARY KEY DEFAULT nextval('curso_id_seq'),
+    nome VARCHAR(30),
+    nome_departamento VARCHAR(30),
     horas_complementares NUMERIC(3),
     faltas NUMERIC(2),
     FOREIGN KEY (nome_departamento) REFERENCES Departamento(nome_departamento)
 );
 
+-- Criação da tabela Aluno
+CREATE SEQUENCE aluno_ra_seq START 1;
+
+CREATE TABLE IF NOT EXISTS Aluno (
+    ra INTEGER PRIMARY KEY DEFAULT nextval('aluno_ra_seq'),
+    id_curso INTEGER,
+    nome VARCHAR(50),
+    email VARCHAR(50),
+    telefone VARCHAR(20),
+    FOREIGN KEY (id_curso) REFERENCES Curso(id_curso)
+);
+
 -- Criação da tabela Disciplina
-CREATE TABLE Disciplina (
+CREATE TABLE IF NOT EXISTS Disciplina (
     codigo_disciplina VARCHAR(6) PRIMARY KEY,
-    nome_departamento VARCHAR(20),
-    nome VARCHAR(20),
+    nome_departamento VARCHAR(30),
+    nome VARCHAR(40),
     carga_horaria NUMERIC(3),
     FOREIGN KEY (nome_departamento) REFERENCES Departamento(nome_departamento)
 );
 
 -- Criação da tabela MatrizCurricular
-CREATE TABLE MatrizCurricular (
+CREATE TABLE IF NOT EXISTS MatrizCurricular (
     codigo_disciplina VARCHAR(6),
-    id_curso VARCHAR(9),
+    id_curso INTEGER,
     PRIMARY KEY (codigo_disciplina, id_curso),
     FOREIGN KEY (codigo_disciplina) REFERENCES Disciplina(codigo_disciplina),
     FOREIGN KEY (id_curso) REFERENCES Curso(id_curso)
 );
 
 -- Criação da tabela Cursa
-CREATE TABLE Cursa (
-    id_aluno VARCHAR(9),
-    id_curso VARCHAR(9),
+CREATE TABLE IF NOT EXISTS Cursa (
+    id_aluno INTEGER,
+    id_curso INTEGER,
     codigo_disciplina VARCHAR(6),
     semestre NUMERIC(1),
     ano NUMERIC(4),
-    media NUMERIC(2, 2),
+    media NUMERIC(4, 2),
     faltas NUMERIC(2),
-    PRIMARY KEY (semestre, ano),
+    PRIMARY KEY (id_aluno, codigo_disciplina),
     FOREIGN KEY (id_aluno) REFERENCES Aluno(ra),
     FOREIGN KEY (id_curso) REFERENCES Curso(id_curso),
     FOREIGN KEY (codigo_disciplina) REFERENCES Disciplina(codigo_disciplina)
 );
 
 -- Criação da tabela Leciona
-CREATE TABLE Leciona (
-    id_professor VARCHAR(9),
-    id_curso VARCHAR(9),
+CREATE TABLE IF NOT EXISTS Leciona (
+    id_professor INTEGER,
+    id_curso INTEGER,
     codigo_disciplina VARCHAR(6),
     semestre NUMERIC(1),
     ano NUMERIC(4),
     carga_horaria NUMERIC(3),
-    PRIMARY KEY (semestre,ano),
+    PRIMARY KEY (id_professor, codigo_disciplina),
     FOREIGN KEY (id_professor) REFERENCES Professor(id),
     FOREIGN KEY (id_curso) REFERENCES Curso(id_curso),
     FOREIGN KEY (codigo_disciplina) REFERENCES Disciplina(codigo_disciplina)
 );
 
 -- Criação da tabela GrupoTCC
-CREATE TABLE GrupoTCC (
-    id_grupo INT PRIMARY KEY,
-    id_professor VARCHAR(9),
-    ra VARCHAR(9),
+CREATE TABLE IF NOT EXISTS GrupoTCC (
+    id_grupo INTEGER,
+    id_professor INTEGER,
+    ra INTEGER,
+    PRIMARY KEY (id_grupo, ra),
     FOREIGN KEY (id_professor) REFERENCES Professor(id),
     FOREIGN KEY (ra) REFERENCES Aluno(ra)
 );
