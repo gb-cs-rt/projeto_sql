@@ -16,8 +16,8 @@ cursor.execute("DROP TABLE IF EXISTS Leciona")
 cursor.execute("DROP TABLE IF EXISTS Cursa")
 cursor.execute("DROP TABLE IF EXISTS MatrizCurricular")
 cursor.execute("DROP TABLE IF EXISTS Disciplina")
-cursor.execute("DROP TABLE IF EXISTS Curso")
 cursor.execute("DROP TABLE IF EXISTS Aluno")
+cursor.execute("DROP TABLE IF EXISTS Curso")
 cursor.execute("DROP TABLE IF EXISTS ChefeDepartamento")
 cursor.execute("DROP TABLE IF EXISTS Professor")
 cursor.execute("DROP TABLE IF EXISTS Departamento")
@@ -56,18 +56,6 @@ tables = [
     );
     """,
     """
-    CREATE SEQUENCE aluno_ra_seq START 1;
-
-    CREATE TABLE IF NOT EXISTS Aluno (
-        ra INTEGER PRIMARY KEY DEFAULT nextval('aluno_ra_seq'),
-        nome_departamento VARCHAR(30),
-        nome VARCHAR(50),
-        email VARCHAR(50),
-        telefone VARCHAR(20),
-        FOREIGN KEY (nome_departamento) REFERENCES Departamento(nome_departamento)
-    );
-    """,
-    """
     CREATE SEQUENCE curso_id_seq START 1;
 
     CREATE TABLE IF NOT EXISTS Curso (
@@ -77,6 +65,18 @@ tables = [
         horas_complementares NUMERIC(3),
         faltas NUMERIC(2),
         FOREIGN KEY (nome_departamento) REFERENCES Departamento(nome_departamento)
+    );
+    """,
+    """
+    CREATE SEQUENCE aluno_ra_seq START 1;
+
+    CREATE TABLE IF NOT EXISTS Aluno (
+        ra INTEGER PRIMARY KEY DEFAULT nextval('aluno_ra_seq'),
+        id_curso INTEGER,
+        nome VARCHAR(50),
+        email VARCHAR(50),
+        telefone VARCHAR(20),
+        FOREIGN KEY (id_curso) REFERENCES Curso(id_curso)
     );
     """,
     """
@@ -158,17 +158,6 @@ for _ in range(40):
         VALUES (%s, %s, %s, %s, %s) ON CONFLICT (id) DO NOTHING
     """, (nome_dep, nome, email, telefone, salario))
 
-# Insert data into Aluno
-for _ in range(100):
-    nome_dep = random.choice(departamentos)
-    nome = fake.name()
-    email = fake.email()
-    telefone = fake.phone_number()
-    cursor.execute("""
-        INSERT INTO Aluno (nome_departamento, nome, email, telefone) 
-        VALUES (%s, %s, %s, %s) ON CONFLICT (ra) DO NOTHING
-    """, (nome_dep, nome, email, telefone))
-
 # Insert data into Curso
 for dep in departamentos:
     nome_dep = dep
@@ -179,6 +168,20 @@ for dep in departamentos:
         INSERT INTO Curso (nome_departamento, nome, horas_complementares, faltas) 
         VALUES (%s, %s, %s, %s) ON CONFLICT (id_curso) DO NOTHING
     """, (nome_dep, nome_curso, horas_complementares, faltas))
+
+cursor.execute("SELECT id_curso FROM Curso")
+id_cursos = cursor.fetchall()
+
+# Insert data into Aluno
+for _ in range(100):
+    id_curso = random.choice(id_cursos)[0]
+    nome = fake.name()
+    email = fake.email()
+    telefone = fake.phone_number()
+    cursor.execute("""
+        INSERT INTO Aluno (id_curso, nome, email, telefone) 
+        VALUES (%s, %s, %s, %s) ON CONFLICT (ra) DO NOTHING
+    """, (id_curso, nome, email, telefone))
 
 # Insert data into Disciplina
 disciplinas = ['Comunicação e Expressão', 'Cálculo I', 'Cálculo II', 'Cálculo III', 'Álgebra Linear', 'Física I', 'Física II', 'Física III', 'Química Geral', 'Química Orgânica', 'Programação I', 'Programação II', 'Programação III', 'Estrutura de Dados', 'Banco de Dados', 'Redes de Computadores', 'Sistemas Operacionais', 'Engenharia de Software', 'Inteligência Artificial', 'Computação Gráfica', 'Sistemas Distribuídos', 'Segurança da Informação', 'Empreendedorismo', 'Gestão de Projetos', 'Tópicos Especiais em Computação', 'Ética e Cidadania', 'Metodologia Científica', 'Trabalho de Conclusão de Curso']
@@ -193,39 +196,54 @@ for _ in range(len(disciplinas)):
     """, (codigo_disciplina, nome_dep, nome, carga_horaria))
 
 # Insert data into MatrizCurricular
-cursor.execute("SELECT codigo_disciplina FROM Disciplina")
+cursor.execute("SELECT codigo_disciplina, nome_departamento FROM Disciplina")
 disciplinas = cursor.fetchall()
-
-cursor.execute("SELECT id_curso FROM Curso")
-cursos = cursor.fetchall()
+disciplinas_copy = disciplinas.copy()
 
 for _ in range(len(disciplinas)):
-    codigo_disciplina = random.choice(disciplinas)[0]
-    id_curso = random.choice(cursos)[0]
+    disciplina = disciplinas_copy.pop()
+    codigo_disciplina = disciplina[0]
+
+    cursor.execute(f"""SELECT id_curso FROM Curso as c
+                   WHERE c.nome_departamento = \'{disciplina[1]}\'""")
+
+    id_curso = cursor.fetchone()[0]
     cursor.execute("""
         INSERT INTO MatrizCurricular (codigo_disciplina, id_curso) 
         VALUES (%s, %s) ON CONFLICT (codigo_disciplina, id_curso) DO NOTHING
     """, (codigo_disciplina, id_curso))
 
 # Insert data into Cursa
-cursor.execute("SELECT ra FROM Aluno")
+cursor.execute("SELECT ra, id_curso FROM Aluno")
 alunos = cursor.fetchall()
-for _ in range(500):
-    id_aluno = random.choice(alunos)[0]
-    id_curso = random.choice(cursos)[0]
-    codigo_disciplina = random.choice(disciplinas)[0]
-    semestre = random.randint(1, 2)
-    ano = random.randint(2019, 2024)
-    media = round(random.uniform(0, 10), 2)
-    faltas = random.randint(0, 10)
-    cursor.execute("""
-        INSERT INTO Cursa (id_aluno, id_curso, codigo_disciplina, semestre, ano, media, faltas) 
-        VALUES (%s, %s, %s, %s, %s, %s, %s) ON CONFLICT (id_aluno, codigo_disciplina) DO NOTHING
-    """, (id_aluno, id_curso, codigo_disciplina, semestre, ano, media, faltas))
+
+for _ in range(len(alunos)):
+    aluno = alunos.pop(random.randint(0, len(alunos) - 1))
+    id_aluno = aluno[0]
+    id_curso = aluno[1]
+
+    cursor.execute(f"""SELECT codigo_disciplina FROM MatrizCurricular as m
+                     WHERE m.id_curso = {id_curso}""")
+    disciplinas_matriz = cursor.fetchall()
+
+    for _ in range(len(disciplinas_matriz)):
+        codigo_disciplina = disciplinas_matriz.pop()[0]
+        semestre = random.randint(1, 2)
+        ano = random.randint(2019, 2024)
+        media = round(random.uniform(0, 10), 2)
+        faltas = random.randint(0, 10)
+        cursor.execute("""
+            INSERT INTO Cursa (id_aluno, id_curso, codigo_disciplina, semestre, ano, media, faltas) 
+            VALUES (%s, %s, %s, %s, %s, %s, %s) ON CONFLICT (id_aluno, codigo_disciplina) DO NOTHING
+        """, (id_aluno, id_curso, codigo_disciplina, semestre, ano, media, faltas))
 
 # Insert data into Leciona
+cursor.execute("SELECT id_curso FROM Curso")
+cursos = cursor.fetchall()
+
 cursor.execute("SELECT id FROM Professor")
 professores = cursor.fetchall()
+
 for _ in range(80):
     id_professor = random.choice(professores)[0]
     id_curso = random.choice(cursos)[0]
