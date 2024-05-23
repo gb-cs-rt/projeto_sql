@@ -32,13 +32,16 @@ _obs: o tutorial abaixo apresenta os passos para conectar-se ao CockroachDB util
 
 ![image](https://github.com/gb-cs-rt/projeto_sql/assets/103227067/be509191-88ce-4aa4-a627-4471c0f83c3f)
 
+- Utilize a linha de comando fornecida para exportar a string de conexão para uma variável do sistema, que será consultada pelo código em python. Essa string deve conter seu nome de usuário e senha, além do hostname e URL do seu cluster.
+_obs: você pode colocar o comando "export DATABASE_URL=..." no arquivo .bashrc da sua distribuição Linux, para que não seja necessário configurar manualmente novos terminais com a variável de conexão._
+
 ## 3- Execute o código generate_data.py
 ```
 python3 generate_data.py
 ```
-<br>
+
 ![image](https://github.com/gb-cs-rt/projeto_sql/assets/103227067/22979a97-fcaa-451e-8794-654fcc30ec23)
-> A senha foi descartada após esse print.
+> _A senha foi descartada após esse print._
 
 # Membros
 Cauan Sousa - 24.124.084-5  
