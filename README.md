@@ -8,7 +8,7 @@ Projeto de Banco de Dados em SQL da disciplina CC5232
 Para facilitar os testes durante o desenvolvimento do projeto, nós desenvolvemos um código em python que popula o banco de dados com dados gerados aleatoriamente. Além disso, o código também "apaga" todas as tabelas e as cria novamente, antes de preenchê-las com novos dados. Para rodar o código de geração de dados aleatórios, siga os passos a seguir.
 
 ## 1- Crie um cluster no CockroachDB (ou em outra plataforma que utilize postgresql)
-_obs: o tutorial abaixo apresenta os passos para conectar-se ao CockroachDB utilizando a biblioteca em python psycopg2. Caso deseje utilizar outra plataforma, o procedimento de conexão pode ser diferente. Neste caso, consulte a documentação de sua plataforma desejada._
+> _obs: o tutorial abaixo apresenta os passos para conectar-se ao CockroachDB utilizando a biblioteca em python psycopg2. Caso deseje utilizar outra plataforma, o procedimento de conexão pode ser diferente. Neste caso, consulte a documentação de sua plataforma desejada._
 
 - Crie uma conta na plataforma **CockroachDB** e crie um cluster (free tier).
 
@@ -33,7 +33,7 @@ _obs: o tutorial abaixo apresenta os passos para conectar-se ao CockroachDB util
 ![image](https://github.com/gb-cs-rt/projeto_sql/assets/103227067/be509191-88ce-4aa4-a627-4471c0f83c3f)
 
 - Utilize a linha de comando fornecida para exportar a string de conexão para uma variável do sistema, que será consultada pelo código em python. Essa string deve conter seu nome de usuário e senha, além do hostname e URL do seu cluster.
-_obs: você pode colocar o comando "export DATABASE_URL=..." no arquivo .bashrc da sua distribuição Linux, para que não seja necessário configurar manualmente novos terminais com a variável de conexão._
+> _obs: você pode colocar o comando "export DATABASE_URL=..." no arquivo .bashrc da sua distribuição Linux, para que não seja necessário configurar manualmente novos terminais com a variável de conexão._
 
 ## 3- Execute o código generate_data.py
 ```
