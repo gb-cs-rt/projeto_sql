@@ -4,18 +4,25 @@ Projeto de Banco de Dados em SQL da disciplina CC5232
 # Diagrama Relacional
 ![image](https://github.com/gb-cs-rt/projeto_sql/blob/main/diagrama_relacional.png)
 
-# Como rodar o código
-## Configurar o cockroachDB
--Clique em conect
+# Código de geração de dados aleatórios
+Para facilitar os testes durante o desenvolvimento do projeto, nós desenvolvemos um código em python que popula o banco de dados com dados gerados aleatoriamente. Além disso, o código também "apaga" todas as tabelas e as cria novamente, antes de preenchê-las com novos dados. Para rodar o código de geração de dados aleatórios, siga os passos a seguir.
 
+## 1- Crie um cluster no CockroachDB (ou em outra plataforma que utilize postgres)
+_obs: o tutorial abaixo apresenta os passos para conectar-se ao CockroachDB utilizando a biblioteca em python psycopg2. Caso deseje utilizar outra plataforma, o procedimento de conexão pode ser diferente. Neste caso, consulte a documentação de sua plataforma desejada._
+
+- Crie uma conta na plataforma *CockroachDB* e crie um cluster (free tier).
+
+## 2- Configure a variável de conexão no seu sistema
+- Na página inicial do seu cluster no CockroachDB, clique em *Connect*.
+
+- Na opção de opção/linguagem, selecione *Python*.
 ![image](https://github.com/gb-cs-rt/projeto_sql/assets/103227067/7cbdf9f2-ecb0-4d01-8036-584ea1122ab3)
-- Colocar linguaguem opcional como python
-  
-![image](https://github.com/gb-cs-rt/projeto_sql/assets/103227067/db7ce608-2e1c-4efc-abde-987a4af49be0)
-- Baixar o certificado de verificação
 
+- Faça o download do certificado de conexão (CA), usando a linha de comando que será fornecida pelo CockroachDB.
+![image](https://github.com/gb-cs-rt/projeto_sql/assets/103227067/db7ce608-2e1c-4efc-abde-987a4af49be0)
+
+- Na opção de ferramenta, selecione *psycopg2*. Neste tutorial, selecionamos o *Linux* como sistema operacional.
 ![image](https://github.com/gb-cs-rt/projeto_sql/assets/103227067/c75f7491-d1d1-45d5-ab56-fe7063b5fd88)
-- Selecionar psycopg2 como ferramenta e criar a variável de ambiente para conexão com o DB
 
 ![image](https://github.com/gb-cs-rt/projeto_sql/assets/103227067/be509191-88ce-4aa4-a627-4471c0f83c3f)
 
