@@ -6,6 +6,9 @@ Projeto de Banco de Dados em SQL da disciplina CC5232
 
 # Como rodar o código
 ## Configurar o cockroachDB
+-Clique em conect
+
+![image](https://github.com/gb-cs-rt/projeto_sql/assets/103227067/7cbdf9f2-ecb0-4d01-8036-584ea1122ab3)
 - Colocar linguaguem opcional como python
   
 ![image](https://github.com/gb-cs-rt/projeto_sql/assets/103227067/db7ce608-2e1c-4efc-abde-987a4af49be0)
@@ -16,9 +19,9 @@ Projeto de Banco de Dados em SQL da disciplina CC5232
 
 ![image](https://github.com/gb-cs-rt/projeto_sql/assets/103227067/be509191-88ce-4aa4-a627-4471c0f83c3f)
 
-## 
-
-
+## Rodar o código python
+![image](https://github.com/gb-cs-rt/projeto_sql/assets/103227067/22979a97-fcaa-451e-8794-654fcc30ec23)
+> A senha foi descartada após esse print.
 
 # Membros
 Cauan Sousa - 24.124.084-5  
