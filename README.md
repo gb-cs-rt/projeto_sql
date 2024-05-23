@@ -20,6 +20,9 @@ Projeto de Banco de Dados em SQL da disciplina CC5232
 ![image](https://github.com/gb-cs-rt/projeto_sql/assets/103227067/be509191-88ce-4aa4-a627-4471c0f83c3f)
 
 ## Rodar o código python
+```
+python3 generate_data.py
+```
 ![image](https://github.com/gb-cs-rt/projeto_sql/assets/103227067/22979a97-fcaa-451e-8794-654fcc30ec23)
 > A senha foi descartada após esse print.
 
