@@ -14,22 +14,22 @@ _obs: o tutorial abaixo apresenta os passos para conectar-se ao CockroachDB util
 
 ## 2- Configure a variável de conexão no seu sistema
 - Na página inicial do seu cluster no CockroachDB, clique em *Connect*.
-
-- Na opção de opção/linguagem, selecione *Python*.
 ![image](https://github.com/gb-cs-rt/projeto_sql/assets/103227067/7cbdf9f2-ecb0-4d01-8036-584ea1122ab3)
-
-- Faça o download do certificado de conexão (CA), usando a linha de comando que será fornecida pelo CockroachDB.
+<br>
+- Na opção de opção/linguagem, selecione *Python*.
 ![image](https://github.com/gb-cs-rt/projeto_sql/assets/103227067/db7ce608-2e1c-4efc-abde-987a4af49be0)
-
-- Na opção de ferramenta, selecione *psycopg2*. Neste tutorial, selecionamos o *Linux* como sistema operacional.
+<br>
+- Faça o download do certificado de conexão (CA), usando a linha de comando que será fornecida pelo CockroachDB.
 ![image](https://github.com/gb-cs-rt/projeto_sql/assets/103227067/c75f7491-d1d1-45d5-ab56-fe7063b5fd88)
-
+<br>
+- Na opção de ferramenta, selecione *psycopg2*. Neste tutorial, selecionamos o *Linux* como sistema operacional.
 ![image](https://github.com/gb-cs-rt/projeto_sql/assets/103227067/be509191-88ce-4aa4-a627-4471c0f83c3f)
-
-## Rodar o código python
+<br>
+## 3- Execute o código generate_data.py
 ```
 python3 generate_data.py
 ```
+<br>
 ![image](https://github.com/gb-cs-rt/projeto_sql/assets/103227067/22979a97-fcaa-451e-8794-654fcc30ec23)
 > A senha foi descartada após esse print.
 
