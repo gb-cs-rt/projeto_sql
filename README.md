@@ -43,6 +43,9 @@ python3 generate_data.py
 ![image](https://github.com/gb-cs-rt/projeto_sql/assets/103227067/22979a97-fcaa-451e-8794-654fcc30ec23)
 > _A senha foi descartada após esse print._
 
+# Queries
+As queries estão disponíveis no arquivo queries_db.sql, no repositório.
+
 # Membros
 Cauan Sousa - 24.124.084-5  
 Gustavo Baggio - 24.122.012-8  
